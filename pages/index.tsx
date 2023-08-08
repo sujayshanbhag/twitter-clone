@@ -1,6 +1,6 @@
 import Image from 'next/image'
-import { useCallback } from 'react'
-import {BsTwitter} from 'react-icons/bs'
+import { useCallback, useState } from 'react'
+import { BsFillImageFill, BsTwitter} from 'react-icons/bs'
 import {BiHomeCircle,BiHash,BiEnvelope} from 'react-icons/bi'
 import {IoMdNotificationsOutline} from 'react-icons/io'
 import {PiBookmarkSimple} from 'react-icons/pi'
@@ -15,7 +15,8 @@ import { graphqlClient } from '@/clients/api'
 import { verifyUserGoogleTokenQuery } from '@/graphql/queries/user'
 import { useCurrentUser } from '@/hooks/user'
 import { useQueryClient } from '@tanstack/react-query'
-
+import {useCreateTweet, useGetAllTweets} from '@/hooks/tweet'
+import { Tweet } from '@/gql/graphql'
 
 
 interface TwitterSidebarButton {
@@ -61,26 +62,45 @@ const sidebarMenuItems : TwitterSidebarButton[]= [
 export default function Home() {
 
   const {user} = useCurrentUser();
+  const {tweets= []} = useGetAllTweets();
+  const {mutate} = useCreateTweet();
   const queryClient = useQueryClient();
+
+  const [content,setContent]= useState('');
+
+  const handleImageSelection = useCallback(() => {
+    const input=document.createElement('input');
+    console.log('image clicked');
+    input.setAttribute('type','file');
+    input.setAttribute('accept','image/*');
+    input.click();
+  },[]);
+
+  const handleCreateTweet = useCallback( ()=> {
+    mutate({
+      content,
+    })
+  },[content,mutate]);
 
   const handleLoginWithGoogle = useCallback(
     async (cred : CredentialResponse) => {
     const googleToken = cred.credential
     if(!googleToken){
       return toast.error('Google token not found');
-  }
-  const {verifyGoogleToken} = await graphqlClient.request(
-    verifyUserGoogleTokenQuery,
-    {token : googleToken});
-  
-    toast.success('Verified success');
-    console.log('got token',verifyGoogleToken);
-    if(verifyGoogleToken){
-      window.localStorage.setItem("__twitter_token",verifyGoogleToken);
-
-      await queryClient.invalidateQueries(["current-user"]);
     }
-},[])
+  
+    const {verifyGoogleToken} = await graphqlClient.request(
+      verifyUserGoogleTokenQuery,
+      {token : googleToken});
+    
+      toast.success('Verified success');
+      console.log('got token',verifyGoogleToken);
+      if(verifyGoogleToken){
+        window.localStorage.setItem("__twitter_token",verifyGoogleToken);
+
+        await queryClient.invalidateQueries(["current-user"]);
+      }
+  },[])
 
   return (
     <div>
@@ -103,24 +123,33 @@ export default function Home() {
             <div className='absolute flex gap-4 hover:bg-gray-800 transition-all rounded-full bottom-3 p-2 '>
               {user.profileImageURL && <Image className='rounded-full' src={user?.profileImageURL} alt="image" width={50} height={50} />}
               <h3 className='text-sm'>{user.firstName} {user.lastName}</h3>
-              <FiMoreHorizontal className='my-auto ml-11 text-2xl '/>
+              <FiMoreHorizontal className='my-auto ml-4 text-2xl '/>
             </div>
             }
           </div>
         </div>
-        <div className='col-span-6 h-screen  no-scrollbar overflow-y-scroll border-r-[1px] border-l-[1px] border-gray-500'>
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
+        <div className='col-span-6 h-screen  no-scrollbar overflow-y-scroll border-r-[1px] border-l-[1px] border-gray-700'>
+        {user && 
+        <div className='grid grid-cols-8 p-4 border border-l-0 -r-0 border-t-0 border-gray-700 hover:bg-slate-900 transition-all'>
+          <div className='col-span-1 '>
+              {user.profileImageURL &&
+              <Image className='rounded-full p-1 mx-auto' src={user?.profileImageURL} alt="image" height={50} width={50}/>}
+          </div>
+          <div className='col-span-7'>
+                <textarea className='w-full bg-transparent text-lg focus:outline-none px-3 resize-none no-scrollbar border-gray-600 border-b-[1px]' 
+                value={content}
+                onChange={e => setContent(e.target.value)}
+                rows={3} placeholder="What's happening" />
+                <div className='mt-2 flex justify-between px-1'>
+                  <BsFillImageFill onClick={handleImageSelection} className='text-xl text-sky-400 my-auto' />
+                  <button onClick={handleCreateTweet}
+                  className='bg-sky-500 rounded-full w-fit py-1 px-2 cursor-pointer'>Tweet</button>
+                </div>
+          </div>
+        </div>}
+        {
+          tweets?.map(tweet => tweet ? <FeedCard key={tweet?.id} data={tweet as Tweet}/> : null)
+        }
         </div>
         <div className='col-span-3 p-5'>
           { !user && 
