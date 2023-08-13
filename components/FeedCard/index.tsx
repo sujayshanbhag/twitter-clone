@@ -24,6 +24,12 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
                 <Link href={`/${data.author?.id}`}>{data.author?.firstName} {data.author?.lastName}</Link>
             </h5>
             <p>{data.content}</p>
+            {
+                data.imageURL &&
+                <div className='border mx-auto my-2 w-4/6 rounded-lg flex justify-center'>
+                    <Image src={data.imageURL} width={300} height={200} alt='image' />
+                </div>
+            }
             <div className='flex justify-between my-2 text-lg text-gray-500  pr-8'>
                 <div className='hover:text-blue-500'>
                     <FaRegComment />

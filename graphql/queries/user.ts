@@ -29,6 +29,7 @@ query GetUserById($id: ID!) {
       tweets {
         content
         id
+        imageURL
         author {
         id
           firstName
