@@ -5,6 +5,7 @@ import {AiOutlineHeart} from 'react-icons/ai'
 import {IoMdStats} from 'react-icons/io'
 import {FiUpload} from 'react-icons/fi'
 import { Tweet } from '@/gql/graphql'
+import Link from 'next/link'
 
 interface FeedCardProps {
     data : Tweet
@@ -19,7 +20,9 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
             <Image className='rounded-full p-1 mx-auto' src={data.author?.profileImageURL} alt="image" height={50} width={50}/>}
         </div>
         <div className='col-span-7'>
-            <h5>{data.author?.firstName} {data.author?.lastName}</h5>
+            <h5>
+                <Link href={`/${data.author?.id}`}>{data.author?.firstName} {data.author?.lastName}</Link>
+            </h5>
             <p>{data.content}</p>
             <div className='flex justify-between my-2 text-lg text-gray-500  pr-8'>
                 <div className='hover:text-blue-500'>
