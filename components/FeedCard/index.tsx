@@ -14,16 +14,16 @@ interface FeedCardProps {
 const FeedCard : React.FC<FeedCardProps> = (props) => {
     const {data} = props
     return (
-    <div className='grid grid-cols-8 p-1 border border-l-0 -r-0 border-t-0 border-gray-700 hover:bg-slate-900 transition-all'>
+    <div className='grid grid-cols-8 gap-1 p-1 border border-l-0 -r-0 border-t-0 border-gray-700 hover:bg-slate-900 transition-all'>
         <div className='col-span-1 '>
             {data.author?.profileImageURL && 
-            <Image className='rounded-full p-1 mx-auto' src={data.author?.profileImageURL} alt="image" height={50} width={50}/>}
+            <Image className='rounded-full  mx-auto' src={data.author?.profileImageURL} alt="image" height={50} width={50}/>}
         </div>
         <div className='col-span-7'>
             <h5>
                 <Link href={`/${data.author?.id}`}>{data.author?.firstName} {data.author?.lastName}</Link>
             </h5>
-            <p>{data.content}</p>
+            <p className='mt-1'>{data.content}</p>
             {
                 data.imageURL &&
                 <div className='border mx-auto my-2 w-4/6 rounded-lg flex justify-center'>

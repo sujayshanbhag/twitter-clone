@@ -1,12 +1,11 @@
 import Image from 'next/image'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { BsFillImageFill} from 'react-icons/bs'
 import FeedCard from '@/components/FeedCard'
 import toast from 'react-hot-toast'
 import { graphqlClient } from '@/clients/api'
 import { useCurrentUser } from '@/hooks/user'
-import { useQueryClient } from '@tanstack/react-query'
-import {useCreateTweet} from '@/hooks/tweet'
+import {useCreateTweet, useGetAllTweets} from '@/hooks/tweet'
 import { Tweet } from '@/gql/graphql'
 import Twitterlayout from '@/components/Layout/TwitterLayout'
 import { GetServerSideProps } from 'next'
@@ -21,11 +20,14 @@ interface HomeProps {
 export default function Home(props :HomeProps) {
 
   const {user} = useCurrentUser();
-  const {mutate} = useCreateTweet();
-  const queryClient = useQueryClient();
+  const {mutateAsync} = useCreateTweet();
+
+  const {tweets=props.tweets as Tweet[]} = useGetAllTweets()
 
   const [content,setContent]= useState('');
   const [imageURL, setImageURL] = useState("");
+
+  
 
   const handleInputChangeFile = useCallback((input: HTMLInputElement) => {
     return async (event: Event) => {
@@ -66,14 +68,14 @@ export default function Home(props :HomeProps) {
     input.click();
   },[]);
 
-  const handleCreateTweet = useCallback( ()=> {
-    mutate({
+  const handleCreateTweet = useCallback(async ()=> {
+    await mutateAsync({
       content,
       imageURL
-    })
+    });
     setContent("");
     setImageURL("");
-  },[content,mutate,imageURL]);
+  },[content,mutateAsync,imageURL]);
 
   
 
@@ -82,7 +84,7 @@ export default function Home(props :HomeProps) {
       <Twitterlayout>
         <div className='border-b-2 border-slate-600'>
           <div className="border border-r-0 border-l-0 border-b-0 border-gray-600 p-5 hover:bg-slate-900 transition-all cursor-pointer">
-            <div className="grid grid-cols-12 gap-3">
+            <div className="grid grid-cols-8 gap-3">
               <div className="col-span-1">
                 {user?.profileImageURL && (
                   <Image
@@ -94,13 +96,13 @@ export default function Home(props :HomeProps) {
                   />
                 )}
               </div>
-              <div className="col-span-11">
+              <div className="col-span-7">
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  className="w-full bg-transparent text-xl px-3 border-b border-slate-700"
+                  className="w-full bg-transparent text-xl resize-none outline-none no-scrollbar px-3 border-b border-slate-700"
                   placeholder="What's happening?"
-                  rows={3}
+                  rows={4}
                 ></textarea>
                 {imageURL && (
                   <Image
@@ -123,7 +125,7 @@ export default function Home(props :HomeProps) {
             </div>
           </div>
         </div>
-        {props.tweets?.map((tweet) =>
+        {tweets?.map((tweet) =>
           tweet ? <FeedCard key={tweet?.id} data={tweet as Tweet} /> : null
         )}
       </Twitterlayout>

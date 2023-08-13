@@ -16,7 +16,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <GoogleOAuthProvider clientId='969627461397-8vssndhi51snf504u3v5rs1fgq2eh294.apps.googleusercontent.com'>
         <Component {...pageProps} />
         <Toaster />
-        <ReactQueryDevtools />
       </GoogleOAuthProvider>
     </QueryClientProvider>
     </div>
