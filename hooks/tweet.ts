@@ -14,6 +14,9 @@ export const useCreateTweet = () => {
         onSuccess : async(payload) => {
             queryClient.invalidateQueries(["all-tweets"]),
             toast.success('Creating Tweet',{id : '1'})
+        },
+        onError : () => {
+            toast.error('Please wait..',{id : '1'})
         }
     })
     return mutation;
