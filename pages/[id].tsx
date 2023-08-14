@@ -7,6 +7,10 @@ import { graphqlClient } from '@/clients/api';
 import { getUserByIdQuery } from '@/graphql/queries/user';
 import { Tweet, User } from '@/gql/graphql';
 import FeedCard from '@/components/FeedCard';
+import { useCurrentUser } from '@/hooks/user';
+import { useCallback, useMemo } from 'react';
+import { followUserMutation, unfollowUserMutation } from '@/graphql/mutations/user';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface ServerProps {
     user? : User
@@ -15,6 +19,31 @@ interface ServerProps {
 const UserProfilePage : NextPage<ServerProps> = (props) => {
     const router = useRouter();
     const {user}= props;
+    const {user : currentUser} = useCurrentUser();
+    const queryClient = useQueryClient();
+
+    const amIFollowing = useMemo(() => {
+        if(!user) return false;
+        return (
+            (currentUser?.following?.findIndex(el => el?.id=== user?.id) ?? -1) >= 0
+        );
+    },[user,currentUser?.following])
+
+    const handleFollowUser = useCallback(async () => {
+        if(!user){
+            return;
+        }
+        await graphqlClient.request(followUserMutation,{to : user.id});
+        await queryClient.invalidateQueries(["current-user"]);
+    },[]);
+
+    const handleUnfollowUser = useCallback(async () => {
+        if(!user){
+            return;
+        }
+        await graphqlClient.request(unfollowUserMutation,{to : user.id});
+        await queryClient.invalidateQueries(["current-user"]);
+    },[]);
 
     return (
         <div>
@@ -31,6 +60,22 @@ const UserProfilePage : NextPage<ServerProps> = (props) => {
                         {user && user.profileImageURL &&
                         <Image className='rounded-full' src={user?.profileImageURL} height={100} width={100} alt='profile'/>}
                         {user && <h1 className='text-lg font-bold'>{user.firstName} {user.lastName}</h1>}
+                        <div className='flex justify-between items-center mt-4'>
+                            <div className='flex gap-4  text-sm font-semibold text-gray-400'>
+                                <span>{props.user?.followers?.length}  followers</span>
+                                <span>{props.user?.following?.length}  following</span>
+                            </div>
+                            {currentUser?.id!=user?.id &&
+                                <>
+                                {
+                                    amIFollowing?
+                                    <button onClick={handleUnfollowUser} className='bg-white text-black text-sm px-2 py-1 rounded-full'>Unfollow</button> 
+                                        :
+                                        <button onClick={handleFollowUser} className='bg-white text-black text-sm px-2 py-1 rounded-full'>Follow</button>
+                                }
+                                </>
+                            }
+                        </div>
                     </div>
                     {
                         user?.tweets && user?.tweets.map(tweet => <FeedCard data={tweet as Tweet}/>)

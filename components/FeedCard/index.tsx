@@ -41,9 +41,6 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
                     <AiOutlineHeart />
                 </div>
                 <div className='hover:text-blue-500'>
-                    <IoMdStats />
-                </div>
-                <div className='hover:text-blue-500'>
                     <FiUpload />
                 </div>
             </div>
