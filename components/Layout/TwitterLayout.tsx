@@ -24,7 +24,7 @@ interface TwitterSidebarButton {
     title : string;
     icon : React.ReactNode;
     link : string;
-  }
+}
   
 
 const TwitterLayout : React.FC<TwitterLayoutProps> = (props) => {
@@ -99,7 +99,7 @@ const TwitterLayout : React.FC<TwitterLayoutProps> = (props) => {
       
     return (
         <div className="overflow-hidden">
-            <div className='grid grid-cols-12 h-screen w-screen px-0 lg:px-64'>
+            <div className='grid grid-cols-12 h-screen w-screen px-0 lg:px-48'>
                 <div className='col-span-2 md:col-span-3 pt-4 md:pr-2 flex text-center justify-center md:justify-end '>
                     <div>
                         <div className='h-fit w-fit hover:bg-gray-900 rounded-full cursor-pointer transition-all'>
@@ -135,15 +135,36 @@ const TwitterLayout : React.FC<TwitterLayoutProps> = (props) => {
                             }
                     </div>
                 </div>
-                <div className='col-span-10 md:col-span-6 h-screen  no-scrollbar overflow-y-scroll border-r-[1px] border-l-[1px] border-gray-700'>
+                <div className='col-span-10 md:col-span-5 h-screen  no-scrollbar overflow-y-scroll border-r-[1px] border-l-[1px] border-gray-700'>
                 {props.children}
                 </div>
-                <div className='col-span-0 md:col-span-2 p-5'>
-                { !user && 
-                <div className='border p-5 bg-slate-900 rounded-lg w-fit'>
-                    <h1 className='my-2 text-xl'>New to Twitter?</h1>
-                    <GoogleLogin onSuccess={handleLoginWithGoogle} />
-                </div>
+                <div className='col-span-0 md:col-span-3 no-scrollbar p-5'>
+                { !user ? (
+                  <div className='border p-5 bg-slate-900 rounded-lg w-fit'>
+                      <h1 className='my-2 text-xl'>New to Twitter?</h1>
+                      <GoogleLogin onSuccess={handleLoginWithGoogle} />
+                  </div>
+                  ) : 
+                  <div className='border-slate-300 border-2 px-2 py-2 w-full bg-slate-800 rounded-lg'>
+                    <h1 className='my-2 text-xl font-semibold'>Who to follow</h1>
+                    {
+                      user?.recommendedUsers?.map(el => 
+                      <div key={el?.id}  >
+                        <div className="flex items-center  py-2 gap-2">
+                        {el?.profileImageURL &&
+                          <Image className="rounded-full" src={el.profileImageURL} width={48} height={48} alt="image" />
+                        }
+                        <div>
+                        <h3>{el?.firstName} {el?.lastName}</h3>
+                        <Link href={`/${el?.id}`}>
+                          <button className="bg-white text-black text-sm font-semibold px-2 py-[2px] rounded-full">View</button>
+                        </Link>
+                        </div>
+                        </div>
+                        </div>)
+                    }
+                  </div>
+                  
                 }
                 </div>
             </div>
