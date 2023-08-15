@@ -35,7 +35,7 @@ const UserProfilePage : NextPage<ServerProps> = (props) => {
         }
         await graphqlClient.request(followUserMutation,{to : user.id});
         await queryClient.invalidateQueries(["current-user"]);
-    },[]);
+    },[queryClient,user]);
 
     const handleUnfollowUser = useCallback(async () => {
         if(!user){
@@ -43,7 +43,7 @@ const UserProfilePage : NextPage<ServerProps> = (props) => {
         }
         await graphqlClient.request(unfollowUserMutation,{to : user.id});
         await queryClient.invalidateQueries(["current-user"]);
-    },[]);
+    },[queryClient,user]);
 
     return (
         <div>
@@ -78,7 +78,7 @@ const UserProfilePage : NextPage<ServerProps> = (props) => {
                         </div>
                     </div>
                     {
-                        user?.tweets && user?.tweets.map(tweet => <FeedCard data={tweet as Tweet}/>)
+                        user?.tweets && user?.tweets.map(tweet => <FeedCard key={tweet?.id} data={tweet as Tweet}/>)
                     }
                     
                 </div>

@@ -66,7 +66,7 @@ export default function Home(props :HomeProps) {
     input.addEventListener("change", handlerFn);
 
     input.click();
-  },[]);
+  },[handleInputChangeFile]);
 
   const handleCreateTweet = useCallback(async ()=> {
     await mutateAsync({

@@ -74,7 +74,7 @@ const TwitterLayout : React.FC<TwitterLayoutProps> = (props) => {
         link : "/"
       }
       
-    ],[])
+    ],[user?.id])
 
     const handleLoginWithGoogle = useCallback(
         async (cred : CredentialResponse) => {
@@ -94,7 +94,7 @@ const TwitterLayout : React.FC<TwitterLayoutProps> = (props) => {
             window.localStorage.setItem("__twitter_token",verifyGoogleToken);
             await queryClient.invalidateQueries(["current-user"]);
         }
-    },[])
+    },[queryClient])
 
       
     return (
