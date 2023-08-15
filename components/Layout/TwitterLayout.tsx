@@ -1,7 +1,7 @@
 import { useCurrentUser } from "@/hooks/user";
 import React, { useCallback, useMemo, useState } from "react";
 import Image from 'next/image'
-import { BiEnvelope, BiHash, BiHomeCircle } from "react-icons/bi";
+import { BiEnvelope, BiHash, BiHomeCircle, BiUserPlus } from "react-icons/bi";
 import { BsTwitter } from "react-icons/bs";
 import { CiCircleMore } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
@@ -124,13 +124,19 @@ const TwitterLayout : React.FC<TwitterLayoutProps> = (props) => {
                                 </div>
                             </button>
                         </div>
-                            {user && 
+                            {user ? ( 
                             <div className='absolute flex gap-1 hover:bg-gray-800 transition-all rounded-full bottom-3 p-2 '>
                             {user.profileImageURL && <Image className='rounded-full' src={user?.profileImageURL} alt="image" width={50} height={50} />}
                             <div className="hidden md:flex gap-1">
                             <h3 className='hidden lg:flex text-sm'>{user.firstName} {user.lastName}</h3>
                             <FiMoreHorizontal className='my-auto text-2xl '/>
                             </div>
+                            </div>
+                            ) :
+                            <div className='absolute rounded-full flex hover:bg-gray-800 transition-all bottom-3 p-2'>
+                              <div className="rounded-lg  w-10 border-white overflow-hidden" >
+                                <GoogleLogin onSuccess={handleLoginWithGoogle} />
+                              </div>
                             </div>
                             }
                     </div>
