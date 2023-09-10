@@ -132,9 +132,9 @@ const TwitterLayout : React.FC<TwitterLayoutProps> = (props) => {
                             <FiMoreHorizontal className='my-auto text-2xl '/>
                             </div>
                             </div>
-                            ) :
+                            ) : 
                             <div className='absolute rounded-full flex hover:bg-gray-800 transition-all bottom-3 p-2'>
-                              <div className="rounded-lg  w-10 border-white overflow-hidden" >
+                              <div className="rounded-xl scale-125 w-[37px] overflow-hidden" >
                                 <GoogleLogin onSuccess={handleLoginWithGoogle} />
                               </div>
                             </div>

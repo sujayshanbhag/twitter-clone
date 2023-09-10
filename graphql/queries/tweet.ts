@@ -2,17 +2,32 @@ import { graphql } from "@/gql";
 
 export const getAllTweetsQuery = graphql(`#graphql
     query GetAllTweets {
-        getAllTweets {
+      getAllTweets {
+        id
+        content
+        imageURL
+        author {
+          id
+          profileImageURL
+          firstName
+          lastName
+        }
+        comment {
+          id
+          content
+          author {
             id
-            content
-            imageURL
+            profileImageURL
+            firstName
+            lastName
+          }
+        }
+        likes {
             author {
-                id
-                profileImageURL
-                firstName
-                lastName
+              email
             }
         }
+      }
     }
 `);
 

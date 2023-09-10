@@ -4,7 +4,7 @@ const nextConfig = {
   images : {
     domains : ["avatars.githubusercontent.com",
               "lh3.googleusercontent.com",
-              "sujay-twitter-dev.s3.ap-south-1.amazonaws.com"],
+              "sujay-twitter-deploy.s3.ap-south-1.amazonaws.com"],
   }
 }
 
