@@ -24,7 +24,7 @@ export const getAllTweetsQuery = graphql(`#graphql
         }
         likes {
             author {
-              email
+              id
             }
         }
       }

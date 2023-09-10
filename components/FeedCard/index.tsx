@@ -8,10 +8,11 @@ import { Comments, Tweet } from '@/gql/graphql'
 import Link from 'next/link'
 import CommentCard from '../Comment'
 import { useCreateComment } from '@/hooks/tweet'
-import { addLikeMutation } from '@/graphql/mutations/tweet'
+import { addLikeMutation, removeLikeMutation } from '@/graphql/mutations/tweet'
 import { graphqlClient } from '@/clients/api'
 import { useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
+import { useCurrentUser } from '@/hooks/user'
 
 interface FeedCardProps {
     data : Tweet
@@ -22,6 +23,7 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
     const [content,setContent]=useState('');
     const [box,showBox]=useState(false);
     const queryClient= useQueryClient();
+    const {user} = useCurrentUser();
 
     const {mutateAsync} = useCreateComment();
     
@@ -39,12 +41,28 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
     const handleCommentClick =() => {
         showBox(!box);
     }
-
-    const handleLikeClicked = useCallback(async () => {
+    
+    const handleTweetLike = useCallback(async () => {
         await graphqlClient.request(addLikeMutation,{to : data.id});
         await queryClient.invalidateQueries(["all-tweets"]);
         toast.success('Tweet Liked');
     },[queryClient]);
+
+    const handleTweetUnlike = useCallback(async () => {
+        await graphqlClient.request(removeLikeMutation,{to : data.id});
+        await queryClient.invalidateQueries(["all-tweets"]);
+        toast.success('Tweet Unliked');
+    },[queryClient]);
+
+    const handleLikeClicked = () => {
+        if(data.likes?.find((like) =>{
+            return like?.author?.id===user?.id; })){
+                handleTweetUnlike();
+        }
+        else {
+            handleTweetLike();
+        }
+    }
 
     return (
     <div className='grid grid-cols-8 gap-1 p-1 border border-l-0 -r-0 border-t-0 border-gray-700 hover:bg-slate-900 transition-all'>
