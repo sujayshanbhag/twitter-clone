@@ -8,6 +8,10 @@ import { Comments, Tweet } from '@/gql/graphql'
 import Link from 'next/link'
 import CommentCard from '../Comment'
 import { useCreateComment } from '@/hooks/tweet'
+import { addLikeMutation } from '@/graphql/mutations/tweet'
+import { graphqlClient } from '@/clients/api'
+import { useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 
 interface FeedCardProps {
     data : Tweet
@@ -17,9 +21,9 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
     const {data} = props;
     const [content,setContent]=useState('');
     const [box,showBox]=useState(false);
+    const queryClient= useQueryClient();
 
     const {mutateAsync} = useCreateComment();
-    //const likeTweet= use
     
     const handleCreateComment = useCallback(async ()=> {
         await mutateAsync({
@@ -30,13 +34,18 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
         showBox(!box);
     },[content,mutateAsync,data.id]);
 
-    // const handleTweetLike = useCallback(async () => {
-    //     await 
-    // })
+    
 
     const handleCommentClick =() => {
         showBox(!box);
     }
+
+    const handleLikeClicked = useCallback(async () => {
+        await graphqlClient.request(addLikeMutation,{to : data.id});
+        await queryClient.invalidateQueries(["all-tweets"]);
+        toast.success('Tweet Liked');
+    },[queryClient]);
+
     return (
     <div className='grid grid-cols-8 gap-1 p-1 border border-l-0 -r-0 border-t-0 border-gray-700 hover:bg-slate-900 transition-all'>
         <div className='col-span-1 '>
@@ -86,7 +95,7 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
                 <div className='hover:text-green-500 '>
                     <FaRetweet />
                 </div>
-                <div  className='hover:text-pink-500 flex gap-1'>
+                <div onClick={handleLikeClicked} className='hover:text-pink-500 flex gap-1'>
                     <AiOutlineHeart />
                     <h4 className='text-sm'>{data.likes?.length}</h4>
                 </div>

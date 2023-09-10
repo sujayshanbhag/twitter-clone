@@ -8,6 +8,18 @@ export const createCommentMutation = graphql(`#graphlql
     }
 `);
 
+export const addLikeMutation = graphql(`#graphlql 
+    mutation AddLikeMutation($to : ID!) {
+        addLike(to : $to)
+    }
+`);
+
+export const removeLikeMutation = graphql(`#graphlql 
+    mutation RemoveLikeMutation($to : ID!) {
+        removeLike(to : $to)
+    }
+`);
+
 
 export const createTweetMutation = graphql(`
     mutation Mutation($payload: CreateTweetData!) {

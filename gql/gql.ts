@@ -14,6 +14,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "#graphlql \n    mutation CommentMutation($payload : CreateCommentData) {\n        addComment(payload : $payload){\n            id\n        }\n    }\n": types.CommentMutationDocument,
+    "#graphlql \n    mutation AddLikeMutation($to : ID!) {\n        addLike(to : $to)\n    }\n": types.AddLikeMutationDocument,
+    "#graphlql \n    mutation RemoveLikeMutation($to : ID!) {\n        removeLike(to : $to)\n    }\n": types.RemoveLikeMutationDocument,
     "\n    mutation Mutation($payload: CreateTweetData!) {\n        createTweet(payload: $payload) {    \n            id\n        }   \n    }\n": types.MutationDocument,
     "#graphql \n    mutation FollowUser($to: ID!) {\n        followUser(to: $to)\n    }\n": types.FollowUserDocument,
     "#graphql \n    mutation UnfollowUser($to: ID!) {\n        unfollowUser(to: $to)\n    }\n": types.UnfollowUserDocument,
@@ -42,6 +44,14 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "#graphlql \n    mutation CommentMutation($payload : CreateCommentData) {\n        addComment(payload : $payload){\n            id\n        }\n    }\n"): (typeof documents)["#graphlql \n    mutation CommentMutation($payload : CreateCommentData) {\n        addComment(payload : $payload){\n            id\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "#graphlql \n    mutation AddLikeMutation($to : ID!) {\n        addLike(to : $to)\n    }\n"): (typeof documents)["#graphlql \n    mutation AddLikeMutation($to : ID!) {\n        addLike(to : $to)\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "#graphlql \n    mutation RemoveLikeMutation($to : ID!) {\n        removeLike(to : $to)\n    }\n"): (typeof documents)["#graphlql \n    mutation RemoveLikeMutation($to : ID!) {\n        removeLike(to : $to)\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

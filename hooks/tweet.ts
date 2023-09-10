@@ -1,6 +1,6 @@
 import { graphqlClient } from "@/clients/api";
 import { CreateCommentData, CreateTweetData } from "@/gql/graphql";
-import {  createCommentMutation, createTweetMutation } from "@/graphql/mutations/tweet";
+import {createCommentMutation, createTweetMutation } from "@/graphql/mutations/tweet";
 import { getAllTweetsQuery } from "@/graphql/queries/tweet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -22,13 +22,7 @@ export const useCreateComment = () => {
     return mutation;
 }
 
-// export const useAddLike= () => {
-//     const queryClient= useQueryClient();
 
-//     const mutation = useMutation({
-//         mutationFn : (to : string) => graphqlClient.request(addLikeMutation,{to})
-//     })
-// }
 
 export const useCreateTweet = () => {
     const queryClient = useQueryClient();
