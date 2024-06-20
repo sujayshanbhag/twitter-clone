@@ -1,3 +1,8 @@
+This is a twitter clone project that lets users tweet, post images, comments, like tweets and follow other people.
+![Screenshot (6)](https://github.com/SujayShanbhag/twitter-clone/assets/127194126/9f3c3e9b-a204-41ad-927d-c678bc1793f1)
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
